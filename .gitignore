@@ -25,4 +25,5 @@ target/
 !/src/test/java/com/example/demo/DemoApplicationTest.java
 !/src/test/java/com/example/demo/.keep
 !/src/test/resources/logback-test.xml
+!/src/test/resources/schema.sql
 /src/acceptanceTest
