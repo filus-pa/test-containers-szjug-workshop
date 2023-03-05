@@ -9,12 +9,25 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.io.File;
 
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.is;
 
+@Testcontainers
 public class DockerComposeApplicationTest  {
+
+    @Container
+    static DockerComposeContainer<?> composeContainer = new DockerComposeContainer<>(new File("docker-compose.yml"))
+            .withLocalCompose(true)
+            .withExposedService("app_1", 8080)
+            .waitingFor("app_1", Wait.forHttp("/actuator/health"));
 
     protected RequestSpecification requestSpecification;
 
@@ -22,7 +35,7 @@ public class DockerComposeApplicationTest  {
     public void setUpAbstractIntegrationTest() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         requestSpecification = new RequestSpecBuilder()
-                .setPort(8080)
+                .setBaseUri(String.format("http://%s:%d", composeContainer.getServiceHost("app_1", 8080), composeContainer.getServicePort("app_1", 8080)))
                 .addHeader(
                         HttpHeaders.CONTENT_TYPE,
                         MediaType.APPLICATION_JSON_VALUE
