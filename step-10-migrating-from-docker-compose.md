@@ -234,7 +234,7 @@ We will use this for our Spring-Boot application:
 static final GenericContainer appContainer = new GenericContainer<>(
         new ImageFromDockerfile()
                 .withFileFromPath("Dockerfile", Paths.get("Dockerfile"))
-                .withFileFromPath("build/libs/workshop.jar", Paths.get("build/libs/workshop.jar"))
+                .withFileFromPath("build/libs/test-containers-szjug-workshop.jar", Paths.get("build/libs/test-containers-szjug-workshop.jar"))
 )
     .withExposedPorts(8080)
     .withEnv("SPRING_REDIS_HOST", "redis")

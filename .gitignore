@@ -26,6 +26,7 @@ target/
 !/src/test/java/com/example/demo/api/RatingsControllerTest.java
 !/src/test/java/com/example/demo/repository/RatingsRepositoryTest.java
 !/src/test/java/com/example/demo/.keep
+!/src/test/java/com/example/demo/DockerComposeApplicationTest.java
 !/src/test/resources/logback-test.xml
 !/src/test/resources/schema.sql
 !/src/test/resources/talks-schema.sql
