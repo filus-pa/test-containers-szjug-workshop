@@ -14,6 +14,7 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
 import java.util.stream.Stream;
 
@@ -24,7 +25,8 @@ public class AbstractIntegrationTest {
 
     //KafkaContainer cannot be used with raw string, it needs DockerImageName.parse method
     static final KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"));
-    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:14-alpine");
+    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:14-alpine")
+            .withCopyToContainer(MountableFile.forClasspathResource("talks-schema.sql"), "/docker-entrypoint-initdb.d/talks-schema.sql");
 
     protected RequestSpecification requestSpecification;
 
