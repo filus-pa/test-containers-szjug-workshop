@@ -11,6 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.utility.DockerImageName;
+
+import java.util.stream.Stream;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
         "spring.datasource.url=jdbc:tc:postgresql:14-alpine://testcontainers/workshop"
@@ -18,6 +22,9 @@ import org.testcontainers.containers.GenericContainer;
 public class AbstractIntegrationTest {
     static final GenericContainer redis = new GenericContainer("redis:6-alpine")
             .withExposedPorts(6379);
+
+    //KafkaContainer cannot be used with raw string, it needs DockerImageName.parse method
+    static final KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"));
 
     protected RequestSpecification requestSpecification;
 
@@ -39,8 +46,11 @@ public class AbstractIntegrationTest {
 
     @DynamicPropertySource
     public static void configureRedis(DynamicPropertyRegistry registry) {
-        redis.start();
+        // Parallel start of containers could save time on start
+        Stream.of(redis, kafka).parallel().forEach(GenericContainer::start);
+
         registry.add("spring.redis.host", redis::getHost);
         registry.add("spring.redis.port", redis::getFirstMappedPort);
+        registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
     }
 }
