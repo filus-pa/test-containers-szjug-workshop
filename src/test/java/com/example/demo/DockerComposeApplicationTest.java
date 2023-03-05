@@ -7,8 +7,12 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.*;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.ImageFromDockerfile;
@@ -19,12 +23,14 @@ import org.testcontainers.utility.MountableFile;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.is;
 
 @Testcontainers
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DockerComposeApplicationTest  {
 
     static Network network = Network.newNetwork();
@@ -71,6 +77,20 @@ public class DockerComposeApplicationTest  {
             .dependsOn(redis, kafka, postgres);
 
     protected RequestSpecification requestSpecification;
+
+    @LocalServerPort
+    protected int localServerPort;
+
+    @DynamicPropertySource
+    public static void configureContainers(DynamicPropertyRegistry registry){
+        Stream.of(redis,kafka,postgres).parallel().forEach(GenericContainer::start);
+        registry.add("spring.redis.host",redis::getHost);
+        registry.add("spring.redis.port",redis::getFirstMappedPort);
+        registry.add("spring.kafka.bootstrap-servers",kafka::getBootstrapServers);
+        registry.add("spring.datasource.url",postgres::getJdbcUrl);
+        registry.add("spring.datasource.username",postgres::getUsername);
+        registry.add("spring.datasource.password",postgres::getPassword);
+    }
 
     @BeforeEach
     public void setUpAbstractIntegrationTest() {
