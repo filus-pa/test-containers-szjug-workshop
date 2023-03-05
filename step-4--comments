@@ -1,0 +1,8 @@
+This step needs running Docker.
+
+If you haven't available docker on or from your machine, and don't want (or can't) install it on your machine
+then you can use docker in cloud delivered by AtomicJar (authors of Testcontainers library):
+
+https://www.testcontainers.cloud
+
+It is still on testing phase, account has to be created but you can log with Google or GitHub credentials.
