@@ -27,8 +27,12 @@ public class RatingsRepository {
     }
 
     public void add(String talkId, int value) {
-        redisTemplate.opsForHash()
-                .increment(toKey(talkId), value + "", 1);
+        try {
+            redisTemplate.opsForHash()
+                    .increment(toKey(talkId), value + "", 1);
+        } catch (Exception e) {
+            throw new MaxRatingsAddedException(e);
+        }
     }
 
     protected String toKey(String talkId) {

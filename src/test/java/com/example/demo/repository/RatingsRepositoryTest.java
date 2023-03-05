@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -40,6 +41,6 @@ public class RatingsRepositoryTest {
         repository.redisTemplate.opsForHash()
                 .put(repository.toKey(talkId), "5", Long.MAX_VALUE + "");
 
-        repository.add(talkId, 5);
+        Assertions.assertThrows(MaxRatingsAddedException.class, () ->  repository.add(talkId, 5));
     }
 }
