@@ -1,5 +1,10 @@
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=master&repo=140400673&machine=standardLinux32gb&location=WestEurope)
 
+# Filus additional comment:
+* For each step (start with 3rd) branch has been created
+* If there are substeps - they have own commits
+* If I had comments for step, they will be included in step-n-comment.md file.
+
 # Introduction
 
 This workshop will explain how to use Testcontainers \( [https://www.testcontainers.org](https://www.testcontainers.org) \) in your Java applications.
