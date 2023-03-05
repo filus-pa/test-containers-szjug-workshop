@@ -28,4 +28,5 @@ target/
 !/src/test/java/com/example/demo/.keep
 !/src/test/resources/logback-test.xml
 !/src/test/resources/schema.sql
+!/src/test/resources/talks-schema.sql
 /src/acceptanceTest
