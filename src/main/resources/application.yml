@@ -16,3 +16,6 @@ spring:
   output:
     ansi:
       enabled: always
+
+  flyway:
+    baseline-on-migrate: true
